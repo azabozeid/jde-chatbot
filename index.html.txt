@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JDE ChatGPT Assistant</title>
+  <style>
+    body { font-family: Arial; margin: 10px; background: #f8f8f8; }
+    #chatbox { height: 300px; overflow-y: auto; border: 1px solid #ccc; background: white; padding: 10px; margin-bottom: 10px; }
+    input { width: 80%; padding: 5px; }
+    button { padding: 6px; }
+  </style>
+</head>
+<body>
+  <h3>ChatGPT Assistant for JD Edwards</h3>
+  <div id="chatbox"></div>
+  <input type="text" id="userInput" placeholder="Ask something..." />
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    async function sendMessage() {
+      let input = document.getElementById("userInput").value;
+      document.getElementById("chatbox").innerHTML += `<p><b>You:</b> ${input}</p>`;
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer YOUR_OPENAI_API_KEY"
+        },
+        body: JSON.stringify({
+          model: "gpt-4",
+          messages: [{ role: "user", content: input }]
+        })
+      });
+      const data = await response.json();
+      const reply = data.choices[0].message.content;
+      document.getElementById("chatbox").innerHTML += `<p><b>Bot:</b> ${reply}</p>`;
+      document.getElementById("userInput").value = "";
+    }
+  </script>
+</body>
+</html>
